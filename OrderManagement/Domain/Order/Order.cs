@@ -9,21 +9,23 @@ namespace OrderManagement.Domain.Order
         private List<OrderLine> _orderLines;
         public long CustomerId { get; private set; }
         public DateTime IssueDate { get; private set; }
+        public OrderStatus Status { get; set; }
         public IReadOnlyList<OrderLine> OrderLines => _orderLines.AsReadOnly();
 
         protected Order() { }
-        public Order(long id, long customerId, DateTime issueDate, List<OrderLine> orderLines, IEventAggregator publisher) : base(publisher)
+        public Order(long id, long customerId, DateTime issueDate, List<OrderLine> orderLines, IEventAggregator publisher)
+            : base(publisher)
         {
-            this.Id = id;
-            CustomerId = customerId;
-            IssueDate = issueDate;
-
             if (!orderLines.Any())
             {
                 throw new InvalidDataException("OrdeLines should be more than zero");
             }
 
-            this._orderLines = orderLines;
+            this.Id = id;
+            CustomerId = customerId;
+            IssueDate = issueDate;
+            _orderLines = orderLines;
+            Status = OrderStatus.Draft;
 
             Publish(new OrderSubmitted(this.Id, this.CustomerId, this.IssueDate, ToOrderLineEvent(orderLines)));
 

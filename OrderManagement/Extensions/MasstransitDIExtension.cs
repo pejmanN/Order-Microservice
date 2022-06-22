@@ -40,9 +40,8 @@ namespace OrderManagement.Extensions
                     cfg.Host(configuration["RabbitMQ:Host"], "/",
                         h =>
                         {
-                            //should be read from Configuration
-                            h.Username("guest");
-                            h.Password("guest");
+                            h.Username(configuration["RabbitMQ:username"]);
+                            h.Password(configuration["RabbitMQ:password"]);
                         }
                     );
                 });
