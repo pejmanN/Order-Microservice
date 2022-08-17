@@ -13,11 +13,6 @@ namespace OrderManagement.Extensions
         {
             services.AddMassTransit(x =>
             {
-                services.AddDbContext<OrderDbContext>(options => options
-                           .UseSqlServer(configuration.GetConnectionString("orderConn"),
-                           b => b.MigrationsAssembly(typeof(OrderDbContext).Assembly.FullName)));
-
-
                 x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                       .EntityFrameworkRepository(r =>
                       {
