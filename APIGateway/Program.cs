@@ -3,7 +3,7 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddOcelot();
+builder.AddOcelot().AddCustomPolly();
 
 var app = builder.Build();
 

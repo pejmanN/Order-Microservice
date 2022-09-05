@@ -24,6 +24,7 @@ namespace OrderManagement.Controllers
         [HttpPost]
         public async Task<ActionResult<GetOrderVm>> Post([FromBody] SubmitOrderVM submitOrderVM)
         {
+            throw new Exception("Order service is done!");
             var createdOrderId = await _orderFacadeService.Create(new SubmitOrderCommand
             {
                 CustomerId = submitOrderVM.CustomerId,
