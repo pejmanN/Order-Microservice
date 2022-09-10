@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OrderManagement.Facade;
 using OrderManagement.ViewModels;
 using OrderManagement.VireModels;
+using Sayad.Authorization;
 
 namespace OrderManagement.Controllers
 {
+    [OrderAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -14,7 +17,7 @@ namespace OrderManagement.Controllers
         {
             _orderFacadeService = orderFacadeService;
         }
-
+        
         [HttpGet("{id}", Name = "GetOrder")]
         public ActionResult<GetOrderVm> GetOrder(int id)
         {
@@ -24,7 +27,6 @@ namespace OrderManagement.Controllers
         [HttpPost]
         public async Task<ActionResult<GetOrderVm>> Post([FromBody] SubmitOrderVM submitOrderVM)
         {
-            throw new Exception("Order service is done!");
             var createdOrderId = await _orderFacadeService.Create(new SubmitOrderCommand
             {
                 CustomerId = submitOrderVM.CustomerId,

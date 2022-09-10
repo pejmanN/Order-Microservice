@@ -1,13 +1,16 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using OrderManagement.Authorization;
 using OrderManagement.Infra.Persistence;
+using Sayad.Authorization;
 using Shared.StateMachines.Order;
 using Shared.StateMachines.Order.Models;
 using System.Reflection;
 
 namespace OrderManagement.Extensions
 {
-    public static class MasstransitDIExtension
+    public static class DiContainerExtension
     {
         public static void AddMasstransit(this IServiceCollection services, ConfigurationManager configuration)
         {
@@ -42,5 +45,29 @@ namespace OrderManagement.Extensions
                 });
             });
         }
+
+        public static void AddAuthenticationAndAuthorization(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddAuthentication("Bearer")
+               .AddJwtBearer("Bearer", options =>
+               {
+                   options.Authority = builder.Configuration["IdentityServer:Authority"];
+                   options.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       ValidateAudience = false
+                   };
+               });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthorizationPolicy.Order, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", AuthorizationScopes.OrderScope);
+                });
+            });
+        }
+
+
     }
 }

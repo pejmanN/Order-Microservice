@@ -27,6 +27,8 @@ builder.Services.AddScoped(typeof(ICommandHandler<SubmitOrderCommand>), typeof(O
 
 builder.Services.AddMasstransit(builder.Configuration);
 
+builder.AddAuthenticationAndAuthorization();
+
 Framework.Config.Bootstrapper.WireUp(builder.Services);
 
 
@@ -45,6 +47,7 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
     serviceScope.ServiceProvider.GetService<DbContext>()?.Database.Migrate();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

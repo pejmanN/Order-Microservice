@@ -3,7 +3,9 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddOcelot().AddCustomPolly();
+builder.AddAuthentication();
+builder.AddOcelot()
+    .AddCustomPolly();
 
 var app = builder.Build();
 
@@ -11,12 +13,12 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
 }
-app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseAuthorization();
-
+app.UseEndpoints(routeBuilder =>
+{
+    routeBuilder.MapControllers();
+});
 await app.UseOcelot();
 
 app.Run();
