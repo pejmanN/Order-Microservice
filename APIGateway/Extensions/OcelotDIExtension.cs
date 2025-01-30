@@ -55,7 +55,7 @@ namespace APIGateway.Extensions
                         ValidateAudience = false,
                         ValidateIssuer = false,
                         // auth key validation
-                        SignatureValidator = delegate (string token, TokenValidationParameters parameters)
+                        SignatureValidator = (string token, TokenValidationParameters parameters) =>
                         {
                             var jwt = new JwtSecurityToken(token);
 

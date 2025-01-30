@@ -9,7 +9,7 @@ namespace CusomerManagement.Infra.Consumers
         {
             try
             {
-                //validate customer
+                //validate customer business
 
                 await context.Publish<CustomerValidated>(new
                 {
@@ -21,6 +21,7 @@ namespace CusomerManagement.Infra.Consumers
             {
                 //_logger.LogError("error occurd", ex);
                 //publish invalid customer event
+                throw new Exception($"Customer with  {context.Message.CustomerId} is invalid");
             }
         }
     }

@@ -114,5 +114,28 @@ public static class Config
                     AlwaysIncludeUserClaimsInIdToken = true,
                     RequirePkce = true,
                 },
+
+                 new Client
+                {
+                    ClientId = "postman",
+                    //ClientSecrets ={ new Secret("secret".Sha256())  } ,
+
+                    //because the client is not public 
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Code,
+
+                    
+                    RedirectUris = { "urn:ietf:wg:oauth:2.0:oob" },
+
+                    //for refresh token
+                    AllowOfflineAccess = false,
+
+                    AllowedScopes = { "openid", "profile","order"},
+
+                    RequireConsent=false,
+                    AlwaysIncludeUserClaimsInIdToken = true,
+                    RequirePkce = true,
+                }
         };
 }

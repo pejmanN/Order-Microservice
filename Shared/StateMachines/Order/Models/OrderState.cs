@@ -8,6 +8,7 @@ namespace Shared.StateMachines.Order.Models
         public int CurrentState { get; set; }
         public long OrderId { get; set; }
         public long CustomerId { get; set; }
+        public string ErrorMessage { get; set; }
         public DateTime UpdatedTime { get; set; }
     }
 }

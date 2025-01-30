@@ -20,7 +20,7 @@ namespace Shared.StateMachines.Order
 
         public async Task Execute(BehaviorContext<OrderState, OrderSubmitted> context, IBehavior<OrderState, OrderSubmitted> next)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
             _logger.LogInformation("OrderSubmittedActivity is called");
 
             var consumeContext = context.GetPayload<ConsumeContext>();

@@ -11,8 +11,7 @@ namespace Framework.Application
 
         public async Task Dispatch<T>(T command) where T : class
         {
-            ICommandHandler<T> handler = null;
-            handler = _commandHandlerFactory.CreateHandler<T>();
+            ICommandHandler<T> handler = _commandHandlerFactory.CreateHandler<T>();
             await handler.Handle(command);
 
         }

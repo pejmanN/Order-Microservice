@@ -54,7 +54,7 @@ namespace OrderManagement.Extensions
                    options.Authority = builder.Configuration["IdentityServer:Authority"];
                    options.TokenValidationParameters = new TokenValidationParameters
                    {
-                       ValidateAudience = false
+                       ValidateAudience = true
                    };
                });
 
