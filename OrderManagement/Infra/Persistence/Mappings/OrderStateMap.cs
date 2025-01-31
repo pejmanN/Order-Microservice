@@ -11,6 +11,7 @@ namespace OrderManagement.Infra.Persistence.Mappings
         {
             entity.Property(x => x.CurrentState).HasMaxLength(64);
             entity.Property(x => x.OrderId);
+            entity.Property(x => x.ErrorMessage).IsRequired(false);
         }
     }
 }

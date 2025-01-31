@@ -4,10 +4,6 @@ namespace OrderManagement.Domain.Contracts
 {
     public class OrderSubmitted : DomainEvent
     {
-        //public OrderSubmitted()
-        //{
-
-        //}
         public OrderSubmitted(long id, long customerId, DateTime issueDate, List<OrderLine> orderLines)
         {
             Id = id;

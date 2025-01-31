@@ -13,6 +13,11 @@ namespace CusomerManagement.Extensions
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
+                    cfg.UseMessageRetry(retryConfigurator =>
+                    {
+                        retryConfigurator.Interval(2, TimeSpan.FromSeconds(25));
+                        //retryConfigurator.Ignore(typeof());
+                    });
                     cfg.ConfigureEndpoints(context);
                     cfg.Host(configuration["RabbitMQ:Host"], "/",
                     h =>

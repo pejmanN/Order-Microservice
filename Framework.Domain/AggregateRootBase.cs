@@ -15,7 +15,7 @@ namespace Framework.Domain
 
         protected AggregateRootBase()
         {
-            this.UncommittedEvents = new List<DomainEvent>();   
+            this.UncommittedEvents = new List<DomainEvent>();
         }
         protected AggregateRootBase(T id) : base(id)
         {

@@ -30,7 +30,8 @@ namespace Framework.Domain.EventOutbox.Job
                 item.ChangeToSentState();
             }
 
-            await _repository.SaveAsync();
+            if (readyToSendItems.Count != 0)
+                await _repository.SaveAsync();
 
         }
     }

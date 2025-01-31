@@ -4,6 +4,7 @@ using OrderManagement.Facade;
 using OrderManagement.ViewModels;
 using OrderManagement.VireModels;
 using Sayad.Authorization;
+using System.Security.Claims;
 
 namespace OrderManagement.Controllers
 {
@@ -17,7 +18,7 @@ namespace OrderManagement.Controllers
         {
             _orderFacadeService = orderFacadeService;
         }
-        
+
         [HttpGet("{id}", Name = "GetOrder")]
         public ActionResult<GetOrderVm> GetOrder(int id)
         {
@@ -27,6 +28,7 @@ namespace OrderManagement.Controllers
         [HttpPost]
         public async Task<ActionResult<GetOrderVm>> Post([FromBody] SubmitOrderVM submitOrderVM)
         {
+            var customerId = User.FindFirstValue("sub");
             var createdOrderId = await _orderFacadeService.Create(new SubmitOrderCommand
             {
                 CustomerId = submitOrderVM.CustomerId,

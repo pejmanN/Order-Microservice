@@ -35,7 +35,7 @@ builder.Services.AddQuartzHostedService(options =>
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumersFromNamespaceContaining<OrderSubmittedConsumer>();
+    //x.AddConsumersFromNamespaceContaining<OrderSubmittedConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.ConfigureEndpoints(context);

@@ -34,6 +34,10 @@ namespace OrderManagement.Migrations.OrderStateDb
                     b.Property<long>("CustomerId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("ErrorMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");
 

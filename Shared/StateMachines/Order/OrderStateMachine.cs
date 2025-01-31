@@ -23,20 +23,11 @@ namespace Shared.StateMachines.Order
                             x.Saga.UpdatedTime = DateTime.Now;
                         })
                         .TransitionTo(Submitted)
-                        .Activity(x => x.OfType<OrderSubmittedActivity>()),
-
-                     When(SubmitOrderFaulted).Then(x =>
-                     {
-                         x.Saga.UpdatedTime = DateTime.Now;
-                     }).TransitionTo(Canceled)
-
-                     .Catch<Exception>(ex => ex.
+                        .Activity(x => x.OfType<OrderSubmittedActivity>())
+                   .Catch<Exception>(ex => ex.
                         Then(x =>
                         {
-                            //this the way we extract Exception message from Activity and keep ex mesage in database for future reference
-                            //context.Instance.ErrorMessage = context.Exception.Message;
-                            //context.Instance.LastUpdated = DateTimeOffset.UtcNow;
-
+                            x.Saga.ErrorMessage = x.Exception.Message;
                             x.Saga.UpdatedTime = DateTime.Now;
                         }).TransitionTo(Faulted))
                 );
@@ -45,13 +36,16 @@ namespace Shared.StateMachines.Order
             During(Submitted,
                     When(CustomerValidated).Then(x =>
                     {
+                        x.Saga.UpdatedTime = DateTime.Now;
                     })
                     .Activity(x => x.OfType<CustomerValidatedActivity>())
                     .TransitionTo(Accepted),
 
-                    When(SubmitOrderFaulted).Then(x =>
+                    When(ValidateCustomerFaulted).Then(x =>
                     {
-                    }).TransitionTo(Canceled)
+                        x.Saga.ErrorMessage = x.Message.Exceptions[0].Message;
+                        x.Saga.UpdatedTime = DateTime.Now;
+                    }).TransitionTo(Faulted)
                );
         }
 
@@ -67,9 +61,13 @@ namespace Shared.StateMachines.Order
                 x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.OrderId);
             });
 
-            Event(() => SubmitOrderFaulted, x =>
+            //Event(() => SubmitOrderFaulted, x =>
+            //{
+            //    x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.Message.Id);
+            //});
+            Event(() => ValidateCustomerFaulted, x =>
             {
-                x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.Message.Id);
+                x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.Message.OrderId);
             });
         }
 
@@ -81,6 +79,7 @@ namespace Shared.StateMachines.Order
 
         public Event<OrderSubmitted> OrderSubmitted { get; private set; }
         public Event<CustomerValidated> CustomerValidated { get; private set; }
-        public Event<Fault<OrderSubmitted>> SubmitOrderFaulted { get; private set; }
+        //public Event<Fault<OrderSubmitted>> SubmitOrderFaulted { get; private set; }
+        public Event<Fault<ValidateCustomer>> ValidateCustomerFaulted { get; private set; }
     }
 }

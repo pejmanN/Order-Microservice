@@ -34,6 +34,11 @@ namespace OrderManagement.Extensions
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
+                    cfg.UseMessageRetry(retryConfigurator =>
+                    {
+                        retryConfigurator.Interval(2, TimeSpan.FromSeconds(25));
+                        //retryConfigurator.Ignore(typeof());
+                    });
                     cfg.ConfigureEndpoints(context); //create and configure receiver endpoints
                     cfg.Host(configuration["RabbitMQ:Host"], "/",
                         h =>
@@ -51,6 +56,8 @@ namespace OrderManagement.Extensions
             builder.Services.AddAuthentication("Bearer")
                .AddJwtBearer("Bearer", options =>
                {
+                   options.Audience = "order-api";
+                   options.MapInboundClaims = false;
                    options.Authority = builder.Configuration["IdentityServer:Authority"];
                    options.TokenValidationParameters = new TokenValidationParameters
                    {
