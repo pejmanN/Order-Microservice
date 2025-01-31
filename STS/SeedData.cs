@@ -35,7 +35,9 @@ public class SeedData
             var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
             context.Database.Migrate();
 
-            SeedDefaultUsers(scope);
+            var identitySetting = app.Configuration.GetSection(nameof(IdentitySetting))
+                                                    .Get<IdentitySetting>();
+            SeedDefaultUsers(scope, identitySetting);
         }
     }
 
@@ -82,7 +84,7 @@ public class SeedData
     {
         if (context.IdentityResources.Any())
             return;
-        
+
         foreach (var resource in Config.IdentityResources)
         {
             context.IdentityResources.Add(resource.ToEntity());
@@ -94,7 +96,7 @@ public class SeedData
     {
         if (context.Clients.Any())
             return;
-        
+
         foreach (var client in Config.Clients)
         {
             context.Clients.Add(client.ToEntity());
@@ -102,7 +104,7 @@ public class SeedData
         context.SaveChanges();
     }
 
-    private static void SeedDefaultUsers(IServiceScope scope)
+    private static void SeedDefaultUsers(IServiceScope scope, IdentitySetting identitySetting)
     {
         var userMgr = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
@@ -111,19 +113,19 @@ public class SeedData
         {
             bob = new ApplicationUser
             {
-                UserName = "bob",
-                Email = "BobSmith@email.com",
+                UserName = identitySetting.AdminUsername,
+                Email = identitySetting.AdminEmail,
                 EmailConfirmed = true
             };
-            var result = userMgr.CreateAsync(bob, "Pass123$").Result;
+            var result = userMgr.CreateAsync(bob, identitySetting.AdminPassword).Result;
             if (!result.Succeeded)
             {
                 throw new Exception(result.Errors.First().Description);
             }
 
             result = userMgr.AddClaimsAsync(bob, new Claim[]{
-                            new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Bob"),
+                            new Claim(JwtClaimTypes.Name, identitySetting.AdminUsername),
+                            new Claim(JwtClaimTypes.GivenName, identitySetting.AdminUsername),
                             new Claim(JwtClaimTypes.FamilyName, "Smith"),
                             new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
                             new Claim("location", "teh")
@@ -133,6 +135,6 @@ public class SeedData
                 throw new Exception(result.Errors.First().Description);
             }
         }
-        
+
     }
 }

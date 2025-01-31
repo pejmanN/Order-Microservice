@@ -9,9 +9,9 @@ namespace CusomerManagement.Infra.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Customer Get(long id)
+        public Customer Get(Guid id)
         {
-            return new Customer(1, "Bob", false, 1000);
+            return new Customer("Bob", false, 1000);
         }
     }
 }

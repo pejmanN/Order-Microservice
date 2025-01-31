@@ -6,12 +6,12 @@ using OrderManagement.Infra.Persistence.Mappings;
 
 namespace OrderManagement.Infra.Persistence
 {
-    public class OrderDbContext : DbContext
+    public class OrderContext : DbContext
     {
         public DbSet<Order> Orders { get; set; }
         public DbSet<DomainEventItem> DomainEventItems { get; set; }
 
-        public OrderDbContext(DbContextOptions<OrderDbContext> options) : base(options)
+        public OrderContext(DbContextOptions<OrderContext> options) : base(options)
         {
             this.SavingChanges += OnSavingChanges;
         }

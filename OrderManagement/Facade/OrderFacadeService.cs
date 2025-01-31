@@ -14,13 +14,13 @@ namespace OrderManagement.Facade
             this._listener = listener;
         }
 
-        public async Task<long> Create(SubmitOrderCommand command)
+        public async Task<Guid> Create(SubmitOrderCommand command)
         {
-            long orderId = 0;
-            _listener.Subscribe(new ActionEventHandler<OrderSubmitted>(orderSubmitted => orderId = orderSubmitted.Id));
+            Guid correlationId = Guid.Empty;
+            _listener.Subscribe(new ActionEventHandler<OrderSubmitted>(orderSubmitted => correlationId = orderSubmitted.CorrelationId));
             await _bus.Dispatch(command);
 
-            return orderId;
+            return correlationId;
         }
     }
 }

@@ -20,25 +20,20 @@ namespace Shared.StateMachines.Order
 
         public async Task Execute(BehaviorContext<OrderState, CustomerValidated> context, IBehavior<OrderState, CustomerValidated> next)
         {
-            _logger.LogInformation("call form AcceptOrderActivity");
 
             var consumeContext = context.GetPayload<ConsumeContext>();
+            var sendEndpoint = await consumeContext
+                .GetSendEndpoint(new Uri("queue:" + BusConstants.AllocateInventory));
 
-            //_bus.pu
-            var sendEndpoint = await consumeContext.GetSendEndpoint(new Uri("queue:fulfill-order"));
+            await sendEndpoint.Send<AllocateInventory>(new
+            {
+                CustomerId = context.Message.CustomerId,
+                OrderId = context.Message.OrderId,
+            });
 
-            //await sendEndpoint.Send<IFulfillOrder>(new
-            //{
-            //    context.Message.OrderId,
-            //    context.Message.CorrelationId,
-            //    context.Saga.CustomerId,
-            //    PaymentCardNumber = "5099"
-            //});
-
-            await next.Execute(context).ConfigureAwait(false);
         }
 
-        public Task Faulted<TException>(BehaviorExceptionContext<OrderState, CustomerValidated, TException> context, 
+        public Task Faulted<TException>(BehaviorExceptionContext<OrderState, CustomerValidated, TException> context,
             IBehavior<OrderState, CustomerValidated> next) where TException : Exception
         {
             return next.Faulted(context);

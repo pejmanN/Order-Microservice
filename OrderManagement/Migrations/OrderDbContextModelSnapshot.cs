@@ -10,7 +10,7 @@ using OrderManagement.Infra.Persistence;
 
 namespace OrderManagement.Migrations
 {
-    [DbContext(typeof(OrderDbContext))]
+    [DbContext(typeof(OrderContext))]
     partial class OrderDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

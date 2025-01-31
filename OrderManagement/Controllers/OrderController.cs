@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderManagement.Facade;
+using OrderManagement.Facade.Query;
+using OrderManagement.Infra.Query;
 using OrderManagement.ViewModels;
 using OrderManagement.VireModels;
 using Sayad.Authorization;
@@ -14,28 +16,33 @@ namespace OrderManagement.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderFacadeService _orderFacadeService;
-        public OrderController(IOrderFacadeService orderFacadeService)
+        private readonly IOrderQeueryFacade _orderQueryFacadeService;
+        public OrderController(IOrderFacadeService orderFacadeService,
+                               IOrderQeueryFacade orderQueryFacadeService)
         {
             _orderFacadeService = orderFacadeService;
+            _orderQueryFacadeService = orderQueryFacadeService;
         }
 
         [HttpGet("{id}", Name = "GetOrder")]
-        public ActionResult<GetOrderVm> GetOrder(int id)
+        public ActionResult<Order> GetOrder(Guid id)
         {
-            return null;
+            var order = _orderQueryFacadeService.GetOrder(id);
+            //NOTE: Map to OrderDto
+            return Ok(order);
         }
 
         [HttpPost]
         public async Task<ActionResult<GetOrderVm>> Post([FromBody] SubmitOrderVM submitOrderVM)
         {
             var customerId = User.FindFirstValue("sub");
-            var createdOrderId = await _orderFacadeService.Create(new SubmitOrderCommand
+            var corrlationId = await _orderFacadeService.Create(new SubmitOrderCommand
             {
-                CustomerId = submitOrderVM.CustomerId,
+                CustomerId = new Guid(customerId),
                 OrderLines = ToSubmitOrderCommandOrderLines(submitOrderVM.OrderLines)
             });
 
-            return CreatedAtRoute(nameof(GetOrder), new { id = createdOrderId }, new GetOrderVm());
+            return CreatedAtRoute(nameof(GetOrder), new { id = corrlationId }, new GetOrderVm());
         }
 
         private List<OrderLineCommand> ToSubmitOrderCommandOrderLines(List<OrderLineVM> orderLines)

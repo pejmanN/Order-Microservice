@@ -11,7 +11,7 @@ using OrderManagement.Infra.Persistence;
 
 namespace OrderManagement.Migrations
 {
-    [DbContext(typeof(OrderDbContext))]
+    [DbContext(typeof(OrderContext))]
     [Migration("20220522073926_init")]
     partial class init
     {

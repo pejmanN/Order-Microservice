@@ -2,7 +2,6 @@
 {
     public class SubmitOrderVM
     {
-        public int CustomerId { get; set; }
         public List<OrderLineVM> OrderLines { get; set; }
     }
 

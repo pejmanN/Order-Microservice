@@ -2,13 +2,56 @@
 {
     public interface ValidateCustomer
     {
-        long CustomerId { get; set; }
+        Guid CustomerId { get; set; }
         long OrderId { get; set; }
     }
 
     public interface CustomerValidated
     {
-        long CustomerId { get; set; }
+        Guid CustomerId { get; set; }
         long OrderId { get; set; }
     }
+
+    public interface AllocateInventory
+    {
+        Guid CustomerId { get; set; }
+        long OrderId { get; set; }
+    }
+
+    public interface InventorAllocated
+    {
+        Guid CustomerId { get; set; }
+        long OrderId { get; set; }
+    }
+
+    public interface DebitCustomer
+    {
+        Guid CustomerId { get; set; }
+        long OrderId { get; set; }
+    }
+
+    public interface CustomerDebited
+    {
+        Guid CustomerId { get; set; }
+        long OrderId { get; set; }
+    }
+
+    public interface CreditCustomer
+    {
+        Guid CustomerId { get; set; }
+        long OrderId { get; set; }
+    }
+
+    public interface CustomerCredited
+    {
+        Guid CustomerId { get; set; }
+        long OrderId { get; set; }
+    }
+
+    public class OrderStatusUpdated
+    {
+        public long OrderId { get; set; }
+        public int Status { get; set; }
+    }
+
 }

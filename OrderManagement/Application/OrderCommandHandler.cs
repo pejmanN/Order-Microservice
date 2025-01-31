@@ -26,7 +26,8 @@ namespace OrderManagement.Application
             _logger.LogInformation("OrderCommandHandler for SubmitOrderCommand called,CustomerId: {CustomerId}", command.CustomerId);
 
             var newOrderId = _orderRepository.GetNextId();
-            var order = new Order(newOrderId, command.CustomerId, DateTime.Now, ToOrderLines(command.OrderLines), _publisher);
+            Guid correlationId = Guid.NewGuid();
+            var order = new Order(newOrderId, command.CustomerId, DateTime.Now, ToOrderLines(command.OrderLines), _publisher, correlationId);
 
             _orderRepository.Add(order);
             await _orderRepository.AsyncSaveChanges();

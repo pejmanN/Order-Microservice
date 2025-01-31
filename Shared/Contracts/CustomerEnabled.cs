@@ -4,21 +4,21 @@ namespace Shared.Contracts
 {
     public class CustomerEnabled : DomainEvent
     {
-        public CustomerEnabled(long customerId)
+        public CustomerEnabled(Guid customerId)
         {
             CustomerId = customerId;
         }
 
-        public long CustomerId { get; private set; }
+        public Guid CustomerId { get; private set; }
     }
 
     public class CustomerDisabled : DomainEvent
     {
-        public CustomerDisabled(long customerId)
+        public CustomerDisabled(Guid customerId)
         {
             CustomerId = customerId;
         }
 
-        public long CustomerId { get; private set; }
+        public Guid CustomerId { get; private set; }
     }
 }

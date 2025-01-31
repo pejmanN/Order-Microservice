@@ -1,9 +1,11 @@
 ﻿namespace OrderManagement.Domain.Order
 {
-    public enum OrderStatus
+    public enum OrderStatus : byte
     {
-        Draft,
         Submitted,
+        Accepted,
         Canceled,
+        Faulted,
+        Completed,
     }
 }

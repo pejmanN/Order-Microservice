@@ -43,7 +43,7 @@ namespace Shared.StateMachines.Order
 
         public void Probe(ProbeContext context)
         {
-            context.CreateScope("submit-order");
+            context.CreateScope("submit-order-activity");
         }
     }
 }

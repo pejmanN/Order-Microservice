@@ -6,9 +6,9 @@ namespace OrderManagement.Infra.Persistence.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        private readonly OrderDbContext _dbContext;
+        private readonly OrderContext _dbContext;
 
-        public OrderRepository(OrderDbContext dbContext)
+        public OrderRepository(OrderContext dbContext)
         {
             _dbContext = dbContext;
         }

@@ -2,7 +2,7 @@
 {
     public class SubmitOrderCommand
     {
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         public List<OrderLineCommand> OrderLines { get; set; }
     }
 

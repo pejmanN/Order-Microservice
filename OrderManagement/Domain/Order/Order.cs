@@ -1,19 +1,21 @@
 ﻿using Framework.Core.Events;
 using Framework.Domain;
 using OrderManagement.Domain.Contracts;
+using System.Security.Principal;
 
 namespace OrderManagement.Domain.Order
 {
     public class Order : AggregateRootBase<long>
     {
         private List<OrderLine> _orderLines;
-        public long CustomerId { get; private set; }
+        public Guid CustomerId { get; private set; }
         public DateTime IssueDate { get; private set; }
         public OrderStatus Status { get; set; }
         public IReadOnlyList<OrderLine> OrderLines => _orderLines.AsReadOnly();
 
         protected Order() { }
-        public Order(long id, long customerId, DateTime issueDate, List<OrderLine> orderLines, IEventAggregator publisher)
+        public Order(long id, Guid customerId, DateTime issueDate, List<OrderLine> orderLines,
+            IEventAggregator publisher, Guid correltionId)
             : base(publisher)
         {
             if (!orderLines.Any())
@@ -25,9 +27,9 @@ namespace OrderManagement.Domain.Order
             CustomerId = customerId;
             IssueDate = issueDate;
             _orderLines = orderLines;
-            Status = OrderStatus.Draft;
+            Status = OrderStatus.Submitted;
 
-            Publish(new OrderSubmitted(this.Id, this.CustomerId, this.IssueDate, ToOrderLineEvent(orderLines)));
+            Publish(new OrderSubmitted(this.Id, this.CustomerId, this.IssueDate, ToOrderLineEvent(orderLines), correltionId));
 
         }
 
