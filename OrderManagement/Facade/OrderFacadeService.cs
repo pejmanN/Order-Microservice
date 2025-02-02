@@ -22,5 +22,10 @@ namespace OrderManagement.Facade
 
             return correlationId;
         }
+
+        public async Task SetOrderStatus(SetOrderStatusCommand setOrderStatusCommand)
+        { 
+            await _bus.Dispatch(setOrderStatusCommand);
+        }
     }
 }

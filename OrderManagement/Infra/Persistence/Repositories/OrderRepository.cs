@@ -18,6 +18,11 @@ namespace OrderManagement.Infra.Persistence.Repositories
             _dbContext.Orders.Add(order);
         }
 
+        public Order Get(long orderId)
+        {
+            return _dbContext.Orders.FirstOrDefault(order => order.Id == orderId);
+        }
+
         public long GetNextId()
         {
             var param = new SqlParameter("@result", System.Data.SqlDbType.Int);
@@ -25,7 +30,7 @@ namespace OrderManagement.Infra.Persistence.Repositories
             _dbContext.Database.ExecuteSqlRaw("set @result = next value for OrderSequence", param);
             return (int)param.Value;
         }
-        public async Task AsyncSaveChanges()
+        public async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();
         }

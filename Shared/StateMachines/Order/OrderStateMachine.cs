@@ -33,15 +33,7 @@ namespace Shared.StateMachines.Order
                         }).TransitionTo(Faulted))
                 );
 
-            AfterLeaveAny(eventActivity =>
-            {
-                return eventActivity.Send(context => new OrderStatusUpdated
-                {
-                    OrderId = context.Saga.OrderId,
-                    Status = context.Saga.CurrentState
-                });
-
-            });
+         
 
             During(Submitted,
                 When(CustomerValidated).Then(x =>
@@ -75,6 +67,16 @@ namespace Shared.StateMachines.Order
                 .TransitionTo(Faulted)
             );
 
+
+            AfterLeaveAny(eventActivity =>
+            {
+                return eventActivity.Send(context => new OrderStatusUpdated
+                {
+                    OrderId = context.Saga.OrderId,
+                    Status = context.Saga.CurrentState
+                });
+
+            });
         }
 
         private void SetCorrelationIds()

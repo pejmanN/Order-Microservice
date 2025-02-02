@@ -5,7 +5,8 @@ using OrderManagement.Facade;
 
 namespace OrderManagement.Application
 {
-    public class OrderCommandHandler : ICommandHandler<SubmitOrderCommand>
+    public class OrderCommandHandler : ICommandHandler<SubmitOrderCommand>,
+                                       ICommandHandler<SetOrderStatusCommand>
     {
         private readonly ILogger<OrderCommandHandler> _logger;
         private readonly IEventAggregator _publisher;
@@ -30,10 +31,21 @@ namespace OrderManagement.Application
             var order = new Order(newOrderId, command.CustomerId, DateTime.Now, ToOrderLines(command.OrderLines), _publisher, correlationId);
 
             _orderRepository.Add(order);
-            await _orderRepository.AsyncSaveChanges();
+            await _orderRepository.SaveChangesAsync();
 
             _logger.LogInformation("OrderCommandHandler for SubmitOrderCommand end,CustomerId: {CustomerId} , " +
                 "orderId : {orderId}", command.CustomerId, newOrderId);
+        }
+
+        public async Task Handle(SetOrderStatusCommand command)
+        {
+            var order = _orderRepository.Get(command.OrderId);
+            if (order is null)
+                throw new Exception($"Order with provided Orderid= {command.OrderId} does not exist");
+
+            order.SetStatus(command.Status);
+
+            await _orderRepository.SaveChangesAsync();
         }
 
         private List<OrderLine> ToOrderLines(List<OrderLineCommand> orderLines)

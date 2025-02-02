@@ -16,7 +16,7 @@ namespace CusomerManagement.Infra.Consumers
 
         public async Task Consume(ConsumeContext<ValidateCustomer> context)
         {
-            //NOTE :Business Login should move to APPLICATION layer
+            //NOTE :Business Login should move to APPLICATION layer(like Order Service)
             var customer = _customerRepository.Get(context.Message.CustomerId);
             if (customer is null || customer.Disabled)
                 throw new Exception("Invalid Customer");

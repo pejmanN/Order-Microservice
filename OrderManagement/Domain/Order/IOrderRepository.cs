@@ -5,8 +5,10 @@ namespace OrderManagement.Domain.Order
     public interface IOrderRepository : IRepository
     {
         void Add(Order order);
-        Task AsyncSaveChanges();
+        Task SaveChangesAsync();
         long GetNextId();
+
+        Order Get(long orderId);
 
     }
 }

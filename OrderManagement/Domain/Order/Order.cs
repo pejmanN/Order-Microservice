@@ -1,6 +1,7 @@
 ﻿using Framework.Core.Events;
 using Framework.Domain;
 using OrderManagement.Domain.Contracts;
+using System.Linq.Expressions;
 using System.Security.Principal;
 
 namespace OrderManagement.Domain.Order
@@ -42,6 +43,18 @@ namespace OrderManagement.Domain.Order
             }
 
             return result;
+        }
+
+        public void SetStatus(int status)
+        {
+            if (Enum.IsDefined(typeof(OrderStatus), status))
+            {
+                this.Status = (OrderStatus)status;
+            }
+            else
+            {
+                throw new InvalidCastException($"Provided Satus is not valid, Status= {status}");
+            }
         }
 
     }

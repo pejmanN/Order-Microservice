@@ -34,7 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Infra\Consumers\" />
     <Folder Include="Migrations\Order\" />
     <Folder Include="Migrations\OrderStateDb\" />
   </ItemGroup>

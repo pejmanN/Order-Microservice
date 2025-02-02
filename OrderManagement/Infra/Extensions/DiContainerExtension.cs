@@ -7,6 +7,7 @@ using OrderManagement.Authorization;
 using OrderManagement.Domain.Order;
 using OrderManagement.Facade;
 using OrderManagement.Facade.Query;
+using OrderManagement.Infra.Consumers;
 using OrderManagement.Infra.Persistence;
 using OrderManagement.Infra.Persistence.Repositories;
 using OrderManagement.Infra.Query;
@@ -23,6 +24,7 @@ namespace OrderManagement.Extensions
         {
             services.AddMassTransit(x =>
             {
+                x.AddConsumersFromNamespaceContaining<OrderStatusUpdatedConsumer>();
                 x.AddSagaStateMachine<OrderStateMachine, OrderState>()
                       .EntityFrameworkRepository(r =>
                       {
@@ -44,7 +46,6 @@ namespace OrderManagement.Extensions
                     cfg.UseMessageRetry(retryConfigurator =>
                     {
                         retryConfigurator.Interval(2, TimeSpan.FromSeconds(25));
-                        //retryConfigurator.Ignore(typeof());
                     });
                     cfg.ConfigureEndpoints(context); //create and configure receiver endpoints
                     cfg.Host(configuration["RabbitMQ:Host"], "/",

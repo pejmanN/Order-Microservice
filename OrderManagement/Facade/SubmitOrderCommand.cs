@@ -13,4 +13,10 @@
         public long Quantity { get;  set; }
         public decimal EachPrice { get;  set; }
     }
+
+    public class SetOrderStatusCommand
+    {
+        public long OrderId { get; set; }
+        public int Status { get; set; }
+    }
 }

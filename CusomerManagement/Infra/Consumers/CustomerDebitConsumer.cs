@@ -19,7 +19,7 @@ namespace CusomerManagement.Infra.Consumers
 
         public async Task Consume(ConsumeContext<DebitCustomer> context)
         {
-            //NOTE :Business Login should move to APPLICATION layer
+            //NOTE :Business Login should move to APPLICATION layer (like Order Service)
             var order = _orderService.GetOrder(context.Message.OrderId);
 
             var customer = _customerRepository.Get(context.Message.CustomerId);
