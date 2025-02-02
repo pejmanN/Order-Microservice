@@ -1,11 +1,15 @@
-﻿using CusomerManagement.Infra.Consumers;
+﻿using CusomerManagement.Domain.Customer;
+using CusomerManagement.Domain.Service;
+using CusomerManagement.Infra.ACL;
+using CusomerManagement.Infra.Consumers;
+using CusomerManagement.Infra.Persistence.Repositories;
 using MassTransit;
 
 namespace CusomerManagement.Extensions
 {
     public static class MasstransitDIExtension
     {
-        public static void AddMasstransit(this IServiceCollection services, ConfigurationManager configuration)
+        public static IServiceCollection AddMasstransit(this IServiceCollection services, ConfigurationManager configuration)
         {
             services.AddMassTransit(x =>
             {
@@ -27,6 +31,16 @@ namespace CusomerManagement.Extensions
                     });
                 });
             });
+            return services;
+        }
+
+        public static IServiceCollection AddCusomerManagementServices(this IServiceCollection services)
+        {
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IOrderService, OrderACLService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+
+            return services;
         }
     }
 }

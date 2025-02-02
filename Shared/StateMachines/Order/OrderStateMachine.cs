@@ -123,12 +123,25 @@ namespace Shared.StateMachines.Order
             {
                 x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.OrderId);
             });
+            Event(() => ValidateCustomerFaulted, x =>
+            {
+                x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.Message.OrderId);
+            });
 
+            Event(() => InventorAllocated, x =>
+            {
+                x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.OrderId);
+            });
             Event(() => InventorAllocatedFaulted, x =>
             {
                 x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.Message.OrderId);
             });
-            Event(() => ValidateCustomerFaulted, x =>
+
+            Event(() => CustomerDebited, x =>
+            {
+                x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.OrderId);
+            });
+            Event(() => CustomerDebitedFaulted, x =>
             {
                 x.CorrelateBy<long>(saga => saga.OrderId, context => context.Message.Message.OrderId);
             });

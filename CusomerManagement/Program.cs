@@ -1,10 +1,4 @@
-using CusomerManagement.Domain.Customer;
-using CusomerManagement.Domain.Service;
 using CusomerManagement.Extensions;
-using CusomerManagement.Infra.ACL;
-using CusomerManagement.Infra.Consumers;
-using CusomerManagement.Infra.Persistence.Repositories;
-using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddMasstransit(builder.Configuration);
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IOrderService, OrderACLService>();
+builder.Services.AddCusomerManagementServices();
 
 
 var app = builder.Build();
