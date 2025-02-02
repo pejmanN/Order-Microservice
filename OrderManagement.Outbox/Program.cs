@@ -1,10 +1,9 @@
 using Framework.Domain.EventOutbox;
-using Framework.Domain.EventOutbox.Job;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using OrderManagement.Outbox;
 using OrderManagement.Outbox.Infra.Persistence;
 using OrderManagement.Outbox.Infra.Publishers;
+using OrderManagement.Outbox.Job;
 using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,20 +17,22 @@ builder.Services.AddDbContext<OrderOutboxDbContext>(options => options
 builder.Services.AddScoped<IOutboxMessagePublisher, MasstransitOutboxMessagePublisher>();
 builder.Services.AddScoped<IWorkerOutboxRepository, WorkerOutboxRepository>();
 
-builder.Services.AddQuartz(q =>
-{
-    q.UseMicrosoftDependencyInjectionJobFactory();
+//builder.Services.AddQuartz(q =>
+//{
+//    q.UseMicrosoftDependencyInjectionJobFactory();
 
-    // Create a "key" for the job                    
-    q.AddJobAndTrigger<OutboxJob>(builder.Configuration);
+//    // Create a "key" for the job                    
+//    q.AddJobAndTrigger<OutboxJob>(builder.Configuration);
 
-});
+//});
 
-builder.Services.AddQuartzHostedService(options =>
-{
-    // when shutting down we want jobs to complete gracefully
-    options.WaitForJobsToComplete = true;
-});
+//builder.Services.AddQuartzHostedService(options =>
+//{
+//    // when shutting down we want jobs to complete gracefully
+//    options.WaitForJobsToComplete = true;
+//});
+
+builder.AddQuartzService();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -47,11 +48,6 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
-
-// Add the Quartz.NET hosted service
-
-builder.Services.AddQuartzHostedService(
-    q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

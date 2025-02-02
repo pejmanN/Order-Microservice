@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OrderManagement.Controllers.ViewModels;
 using OrderManagement.Facade;
 using OrderManagement.Facade.Query;
 using OrderManagement.Infra.Query;
@@ -25,11 +26,14 @@ namespace OrderManagement.Controllers
         }
 
         [HttpGet("{id}", Name = "GetOrder")]
-        public ActionResult<Order> GetOrder(Guid id)
+        public ActionResult<GetOrderVm> GetOrder(Guid id)
         {
             var order = _orderQueryFacadeService.GetOrder(id);
-            //NOTE: Map to OrderDto
-            return Ok(order);
+            if (order is null)
+            {
+                return NotFound();
+            }
+            return Ok(OrderMapper.MapToOrderVm(order));
         }
 
         [HttpPost]
@@ -39,26 +43,11 @@ namespace OrderManagement.Controllers
             var corrlationId = await _orderFacadeService.Create(new SubmitOrderCommand
             {
                 CustomerId = new Guid(customerId),
-                OrderLines = ToSubmitOrderCommandOrderLines(submitOrderVM.OrderLines)
+                OrderLines = OrderMapper.ToSubmitOrderCommandOrderLines(submitOrderVM.OrderLines)
             });
 
             return CreatedAtRoute(nameof(GetOrder), new { id = corrlationId }, new GetOrderVm());
         }
 
-        private List<OrderLineCommand> ToSubmitOrderCommandOrderLines(List<OrderLineVM> orderLines)
-        {
-            var result = new List<OrderLineCommand>();
-            foreach (var line in orderLines)
-            {
-                result.Add(new OrderLineCommand
-                {
-                    EachPrice = line.EachPrice,
-                    ProductId = line.ProductId,
-                    Quantity = line.Quantity,
-                });
-            }
-
-            return result;
-        }
     }
 }

@@ -9,11 +9,11 @@ using OrderManagement.Infra.Persistence;
 
 #nullable disable
 
-namespace OrderManagement.Migrations
+namespace OrderManagement.Migrations.Order
 {
     [DbContext(typeof(OrderContext))]
-    [Migration("20220621091652_addStatus")]
-    partial class addStatus
+    [Migration("20250202125626_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -64,14 +64,14 @@ namespace OrderManagement.Migrations
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("CustomerId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("IssueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<byte>("Status")
+                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 

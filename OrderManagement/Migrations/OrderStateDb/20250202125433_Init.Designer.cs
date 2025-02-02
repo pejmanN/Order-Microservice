@@ -12,8 +12,8 @@ using OrderManagement.Infra.Persistence;
 namespace OrderManagement.Migrations.OrderStateDb
 {
     [DbContext(typeof(OrderStateDbContext))]
-    [Migration("20220601132618_init")]
-    partial class init
+    [Migration("20250202125433_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,8 +33,11 @@ namespace OrderManagement.Migrations.OrderStateDb
                         .HasMaxLength(64)
                         .HasColumnType("int");
 
-                    b.Property<long>("CustomerId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("OrderId")
                         .HasColumnType("bigint");

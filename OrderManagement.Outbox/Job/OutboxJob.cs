@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Framework.Domain.EventOutbox;
+using Microsoft.Extensions.Logging;
 using Quartz;
 
-namespace Framework.Domain.EventOutbox.Job
+namespace OrderManagement.Outbox.Job
 {
     [DisallowConcurrentExecution]
     public class OutboxJob : IJob

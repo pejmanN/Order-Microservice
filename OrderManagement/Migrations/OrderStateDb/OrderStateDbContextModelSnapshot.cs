@@ -31,11 +31,10 @@ namespace OrderManagement.Migrations.OrderStateDb
                         .HasMaxLength(64)
                         .HasColumnType("int");
 
-                    b.Property<long>("CustomerId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ErrorMessage")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("OrderId")

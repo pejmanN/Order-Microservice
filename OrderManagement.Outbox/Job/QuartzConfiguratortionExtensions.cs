@@ -1,11 +1,30 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Quartz;
 
-namespace Framework.Domain.EventOutbox.Job
+namespace OrderManagement.Outbox.Job
 {
     public static class QuartzConfiguratortionExtensions
     {
-        public static void AddJobAndTrigger<T>(
+        public static WebApplicationBuilder AddQuartzService(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+
+                // Create a "key" for the job                    
+                q.AddJobAndTrigger<OutboxJob>(builder.Configuration);
+
+            });
+
+            builder.Services.AddQuartzHostedService(options =>
+            {
+                // when shutting down we want jobs to complete gracefully
+                options.WaitForJobsToComplete = true;
+            });
+
+            return builder;
+        }
+        private static void AddJobAndTrigger<T>(
             this IServiceCollectionQuartzConfigurator quartz,
             IConfiguration config)
             where T : IJob

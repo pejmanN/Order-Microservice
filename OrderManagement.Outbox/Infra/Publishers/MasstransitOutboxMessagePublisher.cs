@@ -7,7 +7,6 @@ namespace OrderManagement.Outbox.Infra.Publishers
     public class MasstransitOutboxMessagePublisher : IOutboxMessagePublisher
     {
         private readonly IPublishEndpoint _publisher;
-
         public MasstransitOutboxMessagePublisher(IPublishEndpoint publisher)
         {
             _publisher = publisher;
