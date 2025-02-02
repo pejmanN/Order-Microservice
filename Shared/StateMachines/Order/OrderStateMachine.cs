@@ -9,7 +9,7 @@ namespace Shared.StateMachines.Order
     {
         public OrderStateMachine(ILogger<OrderState> logger)
         {
-            InstanceState(x => x.CurrentState, Submitted, Accepted, Canceled, Faulted);
+            InstanceState(x => x.CurrentState, Submitted, Accepted, ItemGranted, Canceled, Faulted, Completed);
 
             SetCorrelationIds();
 
@@ -33,9 +33,8 @@ namespace Shared.StateMachines.Order
                         }).TransitionTo(Faulted))
                 );
 
-         
-
             During(Submitted,
+                Ignore(OrderSubmitted),
                 When(CustomerValidated).Then(x =>
                 {
                     x.Saga.UpdatedTime = DateTime.Now;
@@ -51,21 +50,48 @@ namespace Shared.StateMachines.Order
            );
 
             During(Accepted,
+                Ignore(OrderSubmitted),
+                Ignore(CustomerValidated),
                 When(InventorAllocated).Then(x =>
                 {
                     x.Saga.UpdatedTime = DateTime.Now;
                 })
-                //.Send(context => new DebitCustomer(
-                //        context.Saga.OrderId
-                //          context.Saga.CustomerId))
-                .TransitionTo(Completed),
+                 .Send(context => new DebitCustomer
+                 {
+                     OrderId = context.Saga.OrderId,
+                     CustomerId = context.Saga.CustomerId
+                 })
+                .TransitionTo(ItemGranted),
 
                 When(InventorAllocatedFaulted).Then(x =>
                 {
                     x.Saga.UpdatedTime = DateTime.Now;
+                    x.Saga.ErrorMessage = x.Message.Exceptions[0].Message;
                 })
                 .TransitionTo(Faulted)
             );
+
+            During(ItemGranted,
+                Ignore(OrderSubmitted),
+                Ignore(CustomerValidated),
+                Ignore(InventorAllocated),
+                When(CustomerDebited).Then(x =>
+                {
+                    x.Saga.UpdatedTime = DateTime.Now;
+                })
+                .TransitionTo(Completed),
+
+                When(CustomerDebitedFaulted)
+                .Then(x =>
+                    {
+                        x.Saga.ErrorMessage = x.Message.Exceptions[0].Message;
+                    })
+                .Send(context => new DeAllocateInventory
+                {
+                    CustomerId = context.Saga.CustomerId,
+                    OrderId = context.Saga.OrderId,
+                })
+                .TransitionTo(Faulted));
 
 
             AfterLeaveAny(eventActivity =>
@@ -75,8 +101,15 @@ namespace Shared.StateMachines.Order
                     OrderId = context.Saga.OrderId,
                     Status = context.Saga.CurrentState
                 });
-
             });
+
+            During(Completed, Faulted,
+                Ignore(OrderSubmitted),
+                Ignore(CustomerValidated),
+                Ignore(InventorAllocated),
+                Ignore(CustomerDebited)
+           );
+
         }
 
         private void SetCorrelationIds()
@@ -103,14 +136,18 @@ namespace Shared.StateMachines.Order
 
         public State Submitted { get; private set; }  //value in saga=> 3
         public State Accepted { get; private set; }  //value in saga=> 4
-        public State Canceled { get; private set; }  //value in saga=> 5
-        public State Faulted { get; private set; } //value in saga=> 6
-        public State Completed { get; private set; } //value in saga=> 6
+        public State ItemGranted { get; set; }   //value in saga=> 5
+        public State Canceled { get; private set; }  //value in saga=> 7
+        public State Faulted { get; private set; } //value in saga=> 8
+        public State Completed { get; private set; } //value in saga=> 9
+
 
         public Event<OrderSubmitted> OrderSubmitted { get; private set; }
         public Event<CustomerValidated> CustomerValidated { get; private set; }
         public Event<Fault<ValidateCustomer>> ValidateCustomerFaulted { get; private set; }
         public Event<InventorAllocated> InventorAllocated { get; private set; }
         public Event<Fault<InventorAllocated>> InventorAllocatedFaulted { get; private set; }
+        public Event<CustomerDebited> CustomerDebited { get; private set; }
+        public Event<Fault<CustomerDebited>> CustomerDebitedFaulted { get; private set; }
     }
 }

@@ -19,11 +19,10 @@ namespace CusomerManagement.Infra.Consumers
 
         public async Task Consume(ConsumeContext<DebitCustomer> context)
         {
-            //NOTE :Business Login should move to APPLICATION layer (like Order Service)
-            var order = _orderService.GetOrder(context.Message.OrderId);
-
-            var customer = _customerRepository.Get(context.Message.CustomerId);
-            customer.Debit(order.TotalCost);
+            //NOTE :Business Login should move to APPLICATION layer (like Order Service) and Event published using outbox pattern
+            //var order = _orderService.GetOrder(context.Message.OrderId);
+            //var customer = _customerRepository.Get(context.Message.CustomerId);
+            //customer.Debit(order.TotalCost,order.OrderId);
 
 
             await context.Publish<CustomerDebited>(new

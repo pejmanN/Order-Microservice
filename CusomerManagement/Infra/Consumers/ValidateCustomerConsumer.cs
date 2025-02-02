@@ -1,4 +1,5 @@
 ﻿using CusomerManagement.Domain.Customer;
+using CusomerManagement.Domain.Service;
 using MassTransit;
 using Shared.StateMachines.Order.Models;
 
@@ -7,19 +8,19 @@ namespace CusomerManagement.Infra.Consumers
     public class ValidateCustomerConsumer : IConsumer<ValidateCustomer>
     {
         //NOTE :Business Login should move to APPLICATION layer 
-        private readonly ICustomerRepository _customerRepository;
+        private readonly ICustomerService _customerService;
 
-        public ValidateCustomerConsumer(ICustomerRepository customerRepository)
+        public ValidateCustomerConsumer(ICustomerService customerService)
         {
-            _customerRepository = customerRepository;
+            _customerService = customerService;
         }
 
         public async Task Consume(ConsumeContext<ValidateCustomer> context)
         {
             //NOTE :Business Login should move to APPLICATION layer(like Order Service)
-            var customer = _customerRepository.Get(context.Message.CustomerId);
-            if (customer is null || customer.Disabled)
-                throw new Exception("Invalid Customer");
+
+            //var isValid = _customerService.CusotmerIsValid(context.Message.CustomerId);
+      
 
             await context.Publish<CustomerValidated>(new
             {

@@ -1,5 +1,6 @@
 ﻿using Framework.Domain;
 using Shared.Contracts;
+using Shared.StateMachines.Order.Models;
 
 namespace CusomerManagement.Domain.Customer
 {
@@ -42,7 +43,7 @@ namespace CusomerManagement.Domain.Customer
             }
         }
 
-        public void Debit(decimal amount)
+        public void Debit(decimal amount, long orderId)
         {
             if (this.Credit < amount)
             {
@@ -50,11 +51,13 @@ namespace CusomerManagement.Domain.Customer
             }
 
             Credit -= amount;
+            Publish(new CustomerDebited { CustomerId = this.Id, OrderId = orderId });
         }
 
-        public void CreditAccount(decimal amount)
+        public void CreditAccount(decimal amount, long orderId)
         {
             Credit += amount;
+            Publish(new CustomerDebited { CustomerId = this.Id, OrderId = orderId });
         }
     }
 }

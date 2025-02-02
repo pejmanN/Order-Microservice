@@ -17,13 +17,14 @@ namespace CusomerManagement.Infra.Consumers
             _orderService = orderService;
         }
 
-        //NOTE :Business Login should move to APPLICATION layer (like Order Service)
+        
         public async Task Consume(ConsumeContext<CreditCustomer> context)
         {
-            var order = _orderService.GetOrder(context.Message.OrderId);
+            //NOTE :Business Login should move to APPLICATION layer (like Order Service) and Event published using outbox pattern
 
-            var customer = _customerRepository.Get(context.Message.CustomerId);
-            customer.CreditAccount(order.TotalCost);
+            //var order = _orderService.GetOrder(context.Message.OrderId);
+            //var customer = _customerRepository.Get(context.Message.CustomerId);
+            //customer.CreditAccount(order.TotalCost, order.OrderId);
 
 
             await context.Publish<CustomerCredited>(new

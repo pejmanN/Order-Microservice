@@ -1,57 +1,75 @@
-﻿namespace Shared.StateMachines.Order.Models
+﻿using Framework.Core.Events;
+
+namespace Shared.StateMachines.Order.Models
 {
-    public interface ValidateCustomer
+    public class ValidateCustomer
     {
-        Guid CustomerId { get; set; }
-        long OrderId { get; set; }
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
-    public interface CustomerValidated
+    public class CustomerValidated : DomainEvent
     {
-        Guid CustomerId { get; set; }
-        long OrderId { get; set; }
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
-    public interface AllocateInventory
+    public class AllocateInventory
     {
-        Guid CustomerId { get; set; }
-        long OrderId { get; set; }
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
+    }
+    public class InventorAllocated : DomainEvent
+    {
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
+    }
+    public class DeAllocateInventory
+    {
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
-    public interface InventorAllocated
+    public class InventorDeAllocated : DomainEvent
     {
-        Guid CustomerId { get; set; }
-        long OrderId { get; set; }
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
-    public interface DebitCustomer
+    public class DebitCustomer
     {
-        Guid CustomerId { get; set; }
-        long OrderId { get; set; }
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
-    public interface CustomerDebited
+    public class CustomerDebited : DomainEvent
     {
-        Guid CustomerId { get; set; }
-        long OrderId { get; set; }
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
-    public interface CreditCustomer
+    public class CreditCustomer
     {
-        Guid CustomerId { get; set; }
-        long OrderId { get; set; }
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
-    public interface CustomerCredited
+    public class CustomerCredited : DomainEvent
     {
-        Guid CustomerId { get; set; }
-        long OrderId { get; set; }
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
-    public class OrderStatusUpdated
+    public class OrderStatusUpdated : DomainEvent
     {
         public long OrderId { get; set; }
         public int Status { get; set; }
+    }
+
+    public class Rev
+    {
+        public Guid CustomerId { get; set; }
+        public long OrderId { get; set; }
     }
 
 }
