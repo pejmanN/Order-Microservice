@@ -39,8 +39,8 @@ namespace Shared.StateMachines.Order
                 {
                     x.Saga.UpdatedTime = DateTime.Now;
                 })
-                .Activity(x => x.OfType<CustomerValidatedActivity>())
-                .TransitionTo(Accepted),
+                .TransitionTo(Accepted)
+                .Activity(x => x.OfType<CustomerValidatedActivity>()),
 
                 When(ValidateCustomerFaulted).Then(x =>
                 {
@@ -56,12 +56,17 @@ namespace Shared.StateMachines.Order
                 {
                     x.Saga.UpdatedTime = DateTime.Now;
                 })
-                 .Send(context => new DebitCustomer
-                 {
-                     OrderId = context.Saga.OrderId,
-                     CustomerId = context.Saga.CustomerId
-                 })
-                .TransitionTo(ItemGranted),
+                .TransitionTo(ItemGranted)
+                .Send(context => new DebitCustomer
+                {
+                    OrderId = context.Saga.OrderId,
+                    CustomerId = context.Saga.CustomerId
+                })
+                .Send(context => new OrderStatusUpdated
+                {
+                    OrderId = context.Saga.OrderId,
+                    Status = context.Saga.CurrentState
+                }),
 
                 When(InventorAllocatedFaulted).Then(x =>
                 {
@@ -79,22 +84,27 @@ namespace Shared.StateMachines.Order
                 {
                     x.Saga.UpdatedTime = DateTime.Now;
                 })
-                .TransitionTo(Completed),
+                .TransitionTo(Completed)
+                .Send(context => new OrderStatusUpdated
+                {
+                    OrderId = context.Saga.OrderId,
+                    Status = context.Saga.CurrentState
+                }),
 
                 When(CustomerDebitedFaulted)
                 .Then(x =>
                     {
                         x.Saga.ErrorMessage = x.Message.Exceptions[0].Message;
                     })
+                .TransitionTo(Faulted)
                 .Send(context => new DeAllocateInventory
                 {
                     CustomerId = context.Saga.CustomerId,
                     OrderId = context.Saga.OrderId,
-                })
-                .TransitionTo(Faulted));
+                }));
 
 
-            AfterLeaveAny(eventActivity =>
+            WhenEnter(Faulted, eventActivity =>
             {
                 return eventActivity.Send(context => new OrderStatusUpdated
                 {

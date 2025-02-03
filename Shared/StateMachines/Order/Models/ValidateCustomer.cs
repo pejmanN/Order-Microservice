@@ -60,7 +60,7 @@ namespace Shared.StateMachines.Order.Models
         public long OrderId { get; set; }
     }
 
-    public class OrderStatusUpdated : DomainEvent
+    public class OrderStatusUpdated// : DomainEvent
     {
         public long OrderId { get; set; }
         public int Status { get; set; }

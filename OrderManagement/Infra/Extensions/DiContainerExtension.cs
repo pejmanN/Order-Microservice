@@ -1,5 +1,6 @@
 ﻿using Framework.Application;
 using MassTransit;
+using MassTransit.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using OrderManagement.Application;
@@ -12,6 +13,7 @@ using OrderManagement.Infra.Persistence;
 using OrderManagement.Infra.Persistence.Repositories;
 using OrderManagement.Infra.Query;
 using Sayad.Authorization;
+using Shared.Constants;
 using Shared.StateMachines.Order;
 using Shared.StateMachines.Order.Models;
 using System.Reflection;
@@ -25,7 +27,11 @@ namespace OrderManagement.Extensions
             services.AddMassTransit(x =>
             {
                 x.AddConsumersFromNamespaceContaining<OrderStatusUpdatedConsumer>();
-                x.AddSagaStateMachine<OrderStateMachine, OrderState>()
+
+                x.AddSagaStateMachine<OrderStateMachine, OrderState>(sagaConfigurator =>
+                {
+                    //sagaConfigurator.UseInMemoryOutbox();
+                })
                       .EntityFrameworkRepository(r =>
                       {
                           r.ConcurrencyMode = ConcurrencyMode.Pessimistic;
@@ -57,6 +63,10 @@ namespace OrderManagement.Extensions
                     );
                 });
             });
+
+            EndpointConvention.Map<DebitCustomer>(new Uri("queue:" + BusConstants.DebitCustomer));
+            EndpointConvention.Map<DeAllocateInventory>(new Uri("queue:" + BusConstants.DeAllocateInventory));
+            EndpointConvention.Map<OrderStatusUpdated>(new Uri("queue:" + BusConstants.OrderStatusUpdated));
 
             return services;
         }

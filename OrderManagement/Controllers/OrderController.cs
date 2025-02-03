@@ -46,7 +46,7 @@ namespace OrderManagement.Controllers
                 OrderLines = OrderMapper.ToSubmitOrderCommandOrderLines(submitOrderVM.OrderLines)
             });
 
-            return CreatedAtRoute(nameof(GetOrder), new { id = corrlationId }, new GetOrderVm());
+            return AcceptedAtAction(nameof(GetOrder), new { id = corrlationId }, new { CorrelationId = corrlationId });
         }
 
     }

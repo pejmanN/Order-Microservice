@@ -33,6 +33,16 @@ namespace Shared.StateMachines.Order
                 OrderId = context.Message.Id,
             });
 
+            var sendUpdateStatusEndpoint = await consumeContext
+                .GetSendEndpoint(new Uri("queue:" + BusConstants.OrderStatusUpdated));
+
+            await sendUpdateStatusEndpoint.Send<OrderStatusUpdated>(new
+            {
+                OrderId = context.Message.Id,
+                Status = context.Saga.CurrentState
+            });
+
+
             _logger.LogInformation("OrderSubmittedActivity End");
         }
 

@@ -10,6 +10,7 @@ namespace Framework.Application
     {
         private readonly IServiceProvider _serviceProvider;
 
+
         public CommandHandlerFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;

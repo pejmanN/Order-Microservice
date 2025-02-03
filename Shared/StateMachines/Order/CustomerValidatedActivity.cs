@@ -31,6 +31,16 @@ namespace Shared.StateMachines.Order
                 OrderId = context.Message.OrderId,
             });
 
+
+            var sendUpdateStatusEndpoint = await consumeContext
+               .GetSendEndpoint(new Uri("queue:" + BusConstants.OrderStatusUpdated));
+
+            await sendUpdateStatusEndpoint.Send<OrderStatusUpdated>(new
+            {
+                OrderId = context.Message.OrderId,
+                Status = context.Saga.CurrentState
+            });
+
         }
 
         public Task Faulted<TException>(BehaviorExceptionContext<OrderState, CustomerValidated, TException> context,
