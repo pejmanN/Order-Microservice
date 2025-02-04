@@ -20,4 +20,19 @@ namespace OrderManagement.Infra.Consumers
             });
         }
     }
+
+    public class OrderStatusUpdatedConsumerDefinition : ConsumerDefinition<OrderStatusUpdatedConsumer>
+    {
+        protected override void ConfigureConsumer(
+            IReceiveEndpointConfigurator endpointConfigurator,
+            IConsumerConfigurator<OrderStatusUpdatedConsumer> consumerConfigurator)
+        {
+            endpointConfigurator.UseMessageRetry(r =>
+            {
+                r.None();
+            });
+
+            //endpointConfigurator.DiscardFaultedMessages();
+        }
+    }
 }

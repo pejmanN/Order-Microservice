@@ -30,7 +30,7 @@ namespace OrderManagement.Extensions
 
                 x.AddSagaStateMachine<OrderStateMachine, OrderState>(sagaConfigurator =>
                 {
-                    //sagaConfigurator.UseInMemoryOutbox();
+                    sagaConfigurator.UseInMemoryOutbox();
                 })
                       .EntityFrameworkRepository(r =>
                       {
@@ -116,7 +116,8 @@ namespace OrderManagement.Extensions
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderFacadeService, OrderFacadeService>();
             services.AddScoped<IOrderQeueryFacade, OrderQeueryFacade>();
-            services.AddScoped(typeof(ICommandHandler<SubmitOrderCommand>), typeof(OrderCommandHandler));
+            services.AddScoped<ICommandHandler<SubmitOrderCommand>, OrderCommandHandler>();
+            services.AddScoped<ICommandHandler<SetOrderStatusCommand>, OrderCommandHandler>();
 
             return services;
         }

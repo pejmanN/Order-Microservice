@@ -5,11 +5,18 @@ using Shared.StateMachines.Order.Models;
 
 namespace Shared.StateMachines.Order
 {
+    //public class OrderSubmiitedActivityTimeout
+    //{
+    //    public Guid CorrelationId { get; set; }
+    //}
     public class OrderStateMachine : MassTransitStateMachine<OrderState>
     {
+        //public Schedule<OrderState, OrderSubmiitedActivityTimeout> TimeoutExpired { get; private set; }
+
         public OrderStateMachine(ILogger<OrderState> logger)
         {
-            InstanceState(x => x.CurrentState, Submitted, Accepted, ItemGranted, Canceled, Faulted, Completed);
+
+            InstanceState(x => x.CurrentState, Accepted, Validated, ItemGranted, Canceled, Faulted, Completed);
 
             SetCorrelationIds();
 
@@ -23,7 +30,7 @@ namespace Shared.StateMachines.Order
                             x.Saga.UpdatedTime = DateTime.Now;
                             x.Saga.CorrelationId = x.Message.CorrelationId;
                         })
-                        .TransitionTo(Submitted)
+                        .TransitionTo(Accepted)
                         .Activity(x => x.OfType<OrderSubmittedActivity>())
                    .Catch<Exception>(ex => ex.
                         Then(x =>
@@ -33,13 +40,13 @@ namespace Shared.StateMachines.Order
                         }).TransitionTo(Faulted))
                 );
 
-            During(Submitted,
+            During(Accepted,
                 Ignore(OrderSubmitted),
                 When(CustomerValidated).Then(x =>
                 {
                     x.Saga.UpdatedTime = DateTime.Now;
                 })
-                .TransitionTo(Accepted)
+                .TransitionTo(Validated)
                 .Activity(x => x.OfType<CustomerValidatedActivity>()),
 
                 When(ValidateCustomerFaulted).Then(x =>
@@ -49,7 +56,7 @@ namespace Shared.StateMachines.Order
                 }).TransitionTo(Faulted)
            );
 
-            During(Accepted,
+            During(Validated,
                 Ignore(OrderSubmitted),
                 Ignore(CustomerValidated),
                 When(InventorAllocated).Then(x =>
@@ -157,8 +164,8 @@ namespace Shared.StateMachines.Order
             });
         }
 
-        public State Submitted { get; private set; }  //value in saga=> 3
-        public State Accepted { get; private set; }  //value in saga=> 4
+        public State Accepted { get; private set; }  //value in saga=> 3
+        public State Validated { get; private set; }  //value in saga=> 4
         public State ItemGranted { get; set; }   //value in saga=> 5
         public State Canceled { get; private set; }  //value in saga=> 7
         public State Faulted { get; private set; } //value in saga=> 8

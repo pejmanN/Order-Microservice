@@ -10,5 +10,6 @@ namespace Shared.StateMachines.Order.Models
         public Guid CustomerId { get; set; }
         public string ErrorMessage { get; set; }
         public DateTime UpdatedTime { get; set; }
+        public Guid? ExpirationTokenId { get; set; }
     }
 }

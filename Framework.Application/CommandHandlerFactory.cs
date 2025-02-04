@@ -1,3 +1,4 @@
+using Framework.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Framework.Application
@@ -8,17 +9,16 @@ namespace Framework.Application
     }
     public class CommandHandlerFactory : ICommandHandlerFactory
     {
-        private readonly IServiceProvider _serviceProvider;
-
-
-        public CommandHandlerFactory(IServiceProvider serviceProvider)
+        private readonly IServiceLocator _ServiceLocator;
+        public CommandHandlerFactory(IServiceLocator ServiceLocator)
         {
-            _serviceProvider = serviceProvider;
+            _ServiceLocator = ServiceLocator;
         }
 
         public ICommandHandler<T> CreateHandler<T>() where T : class
         {
-            return _serviceProvider.GetRequiredService<ICommandHandler<T>>();
+            var service = _ServiceLocator.Resolve<ICommandHandler<T>>();
+            return service;
         }
     }
 }

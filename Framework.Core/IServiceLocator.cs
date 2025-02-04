@@ -12,12 +12,12 @@ namespace Framework.Core
         T Resolve<T>() where T : class;
     }
 
-    public static class ServiceLocator
-    {
-        public static IServiceLocator Current { get; private set; }
-        public static void Set(IServiceLocator locator)
-        {
-            Current = locator;
-        }
-    }
+    //public static class ServiceLocator
+    //{
+    //    public static IServiceLocator Current { get; private set; }
+    //    public static void Set(IServiceLocator locator)
+    //    {
+    //        Current = locator;
+    //    }
+    //}
 }

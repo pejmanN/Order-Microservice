@@ -22,11 +22,13 @@ namespace CusomerManagement.Infra.Consumers
             //var isValid = _customerService.CusotmerIsValid(context.Message.CustomerId);
       
 
-            await context.Publish<CustomerValidated>(new
-            {
-                CustomerId = context.Message.CustomerId,
-                OrderId = context.Message.OrderId,
-            });
+            //await context.Publish<CustomerValidated>(new
+            //{
+            //    CustomerId = context.Message.CustomerId,
+            //    OrderId = context.Message.OrderId,
+            //});
+
+            throw new NotImplementedException("teeeeeeeeest");
         }
     }
 }
