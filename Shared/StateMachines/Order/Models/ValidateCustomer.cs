@@ -66,10 +66,5 @@ namespace Shared.StateMachines.Order.Models
         public int Status { get; set; }
     }
 
-    public class Rev
-    {
-        public Guid CustomerId { get; set; }
-        public long OrderId { get; set; }
-    }
 
 }

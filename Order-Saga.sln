@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{520DDD15-A9B7-421D-832F-9980B40EA0B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Saga", "Shared\Saga.csproj", "{520DDD15-A9B7-421D-832F-9980B40EA0B7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderManagement", "OrderManagement\OrderManagement.csproj", "{301FEF38-5141-4FCC-B1BA-EE85408E129D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CusomerManagement", "CusomerManagement\CusomerManagement.csproj", "{A48C14C4-55E4-4252-845C-64369BFBB890}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Framework_", "_Framework_", "{6347E94F-C1A1-4259-81BE-E1366897FFB5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Framework", "_Framework", "{6347E94F-C1A1-4259-81BE-E1366897FFB5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Framework.Domain", "Framework.Domain\Framework.Domain.csproj", "{87DA8A8C-A629-4DE2-AE53-4F1C1D1FAA40}"
 EndProject
@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "G2", "G2\G2.csproj", "{12AF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inventory", "Inventory", "{7C0BCCB5-DBEC-46FD-A053-2BFEDA04D9F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inventory", "Inventory\Inventory.csproj", "{788F6CE6-F8CF-4DD5-8B96-C96C0E74B4E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory", "Inventory\Inventory.csproj", "{788F6CE6-F8CF-4DD5-8B96-C96C0E74B4E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -106,6 +106,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{520DDD15-A9B7-421D-832F-9980B40EA0B7} = {6347E94F-C1A1-4259-81BE-E1366897FFB5}
 		{301FEF38-5141-4FCC-B1BA-EE85408E129D} = {664FD559-6CCF-4C8F-B41F-C5C4FC2A3E85}
 		{A48C14C4-55E4-4252-845C-64369BFBB890} = {ED201AB5-0367-4728-A1BC-211DB0FB0E5D}
 		{87DA8A8C-A629-4DE2-AE53-4F1C1D1FAA40} = {6347E94F-C1A1-4259-81BE-E1366897FFB5}
