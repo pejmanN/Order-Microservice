@@ -1,7 +1,9 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
 using OrderManagement.Domain.Contracts;
+using Quartz.Logging;
 using Shared.StateMachines.Order.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Shared.StateMachines.Order
 {
@@ -89,6 +91,8 @@ namespace Shared.StateMachines.Order
                 Ignore(InventorAllocated),
                 When(CustomerDebited).Then(x =>
                 {
+                    logger.LogInformation("Order process is completed for Customer {context.Message.CustomerId}, Order ={context.Message.OrderId}",
+                                         x.Message.CustomerId, x.Message.OrderId);
                     x.Saga.UpdatedTime = DateTime.Now;
                 })
                 .TransitionTo(Completed)
@@ -102,6 +106,7 @@ namespace Shared.StateMachines.Order
                 .Then(x =>
                     {
                         x.Saga.ErrorMessage = x.Message.Exceptions[0].Message;
+                        x.Saga.UpdatedTime = DateTime.Now;
                     })
                 .TransitionTo(Faulted)
                 .Send(context => new DeAllocateInventory
@@ -113,11 +118,14 @@ namespace Shared.StateMachines.Order
 
             WhenEnter(Faulted, eventActivity =>
             {
+
                 return eventActivity.Send(context => new OrderStatusUpdated
                 {
                     OrderId = context.Saga.OrderId,
                     Status = context.Saga.CurrentState
                 });
+
+
             });
 
             During(Completed, Faulted,
@@ -167,9 +175,9 @@ namespace Shared.StateMachines.Order
         public State Accepted { get; private set; }  //value in saga=> 3
         public State Validated { get; private set; }  //value in saga=> 4
         public State ItemGranted { get; set; }   //value in saga=> 5
-        public State Canceled { get; private set; }  //value in saga=> 7
-        public State Faulted { get; private set; } //value in saga=> 8
-        public State Completed { get; private set; } //value in saga=> 9
+        public State Canceled { get; private set; }  //value in saga=> 6
+        public State Faulted { get; private set; } //value in saga=> 7
+        public State Completed { get; private set; } //value in saga=> 8
 
 
         public Event<OrderSubmitted> OrderSubmitted { get; private set; }

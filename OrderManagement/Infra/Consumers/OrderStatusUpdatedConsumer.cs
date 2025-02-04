@@ -7,12 +7,18 @@ namespace OrderManagement.Infra.Consumers
     public class OrderStatusUpdatedConsumer : IConsumer<OrderStatusUpdated>
     {
         private readonly IOrderFacadeService _orderFacadeService;
-        public OrderStatusUpdatedConsumer(IOrderFacadeService orderFacadeService)
+
+        private readonly ILogger<OrderStatusUpdatedConsumer> _logger;
+        public OrderStatusUpdatedConsumer(IOrderFacadeService orderFacadeService, 
+            ILogger<OrderStatusUpdatedConsumer> logger)
         {
             _orderFacadeService = orderFacadeService;
+            _logger = logger;
         }
         public async Task Consume(ConsumeContext<OrderStatusUpdated> context)
         {
+            _logger.LogInformation("OrderStatusUpdatedConsumer for  OrderId {OrderId}, Status ={Status}",
+                                         context.Message.OrderId, context.Message.Status);
             await _orderFacadeService.SetOrderStatus(new SetOrderStatusCommand
             {
                 OrderId = context.Message.OrderId,

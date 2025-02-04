@@ -5,16 +5,19 @@ using Shared.StateMachines.Order.Models;
 
 namespace CusomerManagement.Infra.Consumers
 {
-    public class CustomerDebitConsumer : IConsumer<DebitCustomer>
+    public class DebitCustomerConsumer : IConsumer<DebitCustomer>
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IOrderService _orderService;
+        private readonly ILogger<DebitCustomerConsumer> _logger;
 
-        public CustomerDebitConsumer(ICustomerRepository customerRepository,
-                                    IOrderService orderService)
+        public DebitCustomerConsumer(ICustomerRepository customerRepository,
+                                    IOrderService orderService,
+                                    ILogger<DebitCustomerConsumer> logger)
         {
             _customerRepository = customerRepository;
             _orderService = orderService;
+            _logger = logger;
         }
 
         public async Task Consume(ConsumeContext<DebitCustomer> context)
@@ -24,7 +27,8 @@ namespace CusomerManagement.Infra.Consumers
             //var customer = _customerRepository.Get(context.Message.CustomerId);
             //customer.Debit(order.TotalCost,order.OrderId);
 
-
+            _logger.LogInformation("CustomerDebitConsumer for Customer {context.Message.CustomerId}, Order ={context.Message.OrderId}",
+                context.Message.CustomerId, context.Message.OrderId);
             await context.Publish<CustomerDebited>(new
             {
                 CustomerId = context.Message.CustomerId,

@@ -12,6 +12,7 @@ namespace OrderManagement.Domain.Order
         public Guid CustomerId { get; private set; }
         public DateTime IssueDate { get; private set; }
         public OrderStatus Status { get; set; }
+        public Guid CorrelationId { get; private set; }
         public IReadOnlyList<OrderLine> OrderLines => _orderLines.AsReadOnly();
 
         protected Order() { }
@@ -29,6 +30,7 @@ namespace OrderManagement.Domain.Order
             IssueDate = issueDate;
             _orderLines = orderLines;
             Status = OrderStatus.Submitted;
+            CorrelationId = correltionId;
 
             Publish(new OrderSubmitted(this.Id, this.CustomerId, this.IssueDate, ToOrderLineEvent(orderLines), correltionId));
 

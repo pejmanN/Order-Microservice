@@ -24,21 +24,31 @@ namespace OrderManagement.Application
 
         public async Task Handle(SubmitOrderCommand command)
         {
-            _logger.LogInformation("OrderCommandHandler for SubmitOrderCommand called,CustomerId: {CustomerId}", command.CustomerId);
+            try
+            {
+                _logger.LogInformation("OrderCommandHandler for SubmitOrderCommand called,CustomerId: {CustomerId}", command.CustomerId);
 
-            var newOrderId = _orderRepository.GetNextId();
-            Guid correlationId = Guid.NewGuid();
-            var order = new Order(newOrderId, command.CustomerId, DateTime.Now, ToOrderLines(command.OrderLines), _publisher, correlationId);
+                var newOrderId = _orderRepository.GetNextId();
+                Guid correlationId = Guid.NewGuid();
+                var order = new Order(newOrderId, command.CustomerId, DateTime.Now, ToOrderLines(command.OrderLines), _publisher, correlationId);
 
-            _orderRepository.Add(order);
-            await _orderRepository.SaveChangesAsync();
+                _orderRepository.Add(order);
+                await _orderRepository.SaveChangesAsync();
 
-            _logger.LogInformation("OrderCommandHandler for SubmitOrderCommand end,CustomerId: {CustomerId} , " +
-                "orderId : {orderId}", command.CustomerId, newOrderId);
+                _logger.LogInformation("OrderCommandHandler for SubmitOrderCommand end,CustomerId: {CustomerId} , " +
+                    "orderId : {orderId}", command.CustomerId, newOrderId);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
         }
 
         public async Task Handle(SetOrderStatusCommand command)
         {
+            _logger.LogInformation("OrderCommandHandler for SetOrderStatusCommand called,orderId: {orderId}", command.OrderId);
             var order = _orderRepository.Get(command.OrderId);
             if (order is null)
                 throw new Exception($"Order with provided Orderid= {command.OrderId} does not exist");
